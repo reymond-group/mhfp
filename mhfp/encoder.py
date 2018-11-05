@@ -220,3 +220,21 @@ class MHFPEncoder:
     """
 
     return MHFPEncoder.shingling_from_mol(AllChem.MolFromSmiles(in_smiles, sanitize=sanitize), rings=rings, radius=radius, kekulize=True)
+
+
+  @staticmethod
+  def fold(hash_values, length=2048):
+    """Folds the hash values to a binary vector of a given length.
+
+    Arguments:
+      hash_value {numpy.ndarray} -- An array containing the hash values.
+      length {int} -- The length of the folded fingerprint (default: {2048})
+    
+    Returns:
+      numpy.ndarray -- The folded fingerprint.
+    """
+
+    folded = np.zeros(length, dtype=int)
+    folded[hash_values % length] = 1
+
+    return folded
