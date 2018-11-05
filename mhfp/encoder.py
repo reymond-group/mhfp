@@ -122,6 +122,17 @@ class MHFPEncoder:
     return hash_values.reshape((1, self.n_permutations))[0]
 
   @staticmethod
+  def hash(shingling):
+    """ For testing purposes only. """
+
+    hash_values = []
+
+    for t in shingling:
+      hash_values.append(struct.unpack('<I', sha1(t).digest()[:4])[0])
+
+    return np.array(hash_values)
+
+  @staticmethod
   def merge(a, b):
     """Merges (union) the two MHFP vectors.
     

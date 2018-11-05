@@ -10,7 +10,7 @@ with open('README.md', 'r') as fh:
     LONG_DESCRIPTION = fh.read()
 
 NAME = 'mhfp'
-VERSION = '1.0'
+VERSION = '1.2'
 AUTHOR = 'Daniel Probst'
 DESCRIPTION = 'Molecular MHFP fingerprints for cheminformatics applications'
 URL = 'https://github.com/reymond-group/mhfp'
