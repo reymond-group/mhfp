@@ -1,6 +1,8 @@
 # MHFP
 MHFP6 (MinHash fingerprint, up to six bonds) is a molecular fingerprint which encodes detailed substructures using the extended connectivity principle of ECFP in a fundamentally different manner, increasing the performance of exact nearest neighbor searches in benchmarking studies and enabling the application of locality sensitive hashing (LSH) approximate nearest neighbor search algorithms. To describe a molecule, MHFP6 extracts the SMILES of all circular substructures around each atom up to a diameter of six bonds and applies the MinHash method to the resulting set. MHFP6 outperforms ECFP4 in benchmarking analog recovery studies. Furthermore, MHFP6 outperforms ECFP4 in approximate nearest neighbor searches by two orders of magnitude in terms of speed, while decreasing the error rate.
 
+**Associated Publication**: https://chemrxiv.org/articles/A_Probabilistic_Molecular_Fingerprint_for_Big_Data_Settings/7176350
+
 ## Materials
 The performance of MHFP has been avaluated using [Open-source platform to benchmark fingerprints for ligand-based virtual screening](https://github.com/rdkit/benchmarking_platform) and [ChEMBL24](https://www.ebi.ac.uk/chembl/downloads). Python (pyspark) scripts for the ChEMBL24 benchmark can be found in this repository.
 
