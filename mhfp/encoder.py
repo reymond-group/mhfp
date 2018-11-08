@@ -166,7 +166,9 @@ class MHFPEncoder:
     Returns:
       float -- The estimated Jaccard distance.
     """
-    return 1.0 - np.sum(a == b) / len(a)
+
+    # The Jaccard distance of Minhashed values is estimated by
+    return 1.0 - np.float(np.count_nonzero(a == b)) / np.float(len(a))
 
 
   @staticmethod
