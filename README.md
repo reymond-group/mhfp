@@ -1,4 +1,5 @@
 # MHFP
+
 MHFP6 (MinHash fingerprint, up to six bonds) is a molecular fingerprint which encodes detailed substructures using the extended connectivity principle of ECFP in a fundamentally different manner, increasing the performance of exact nearest neighbor searches in benchmarking studies and enabling the application of locality sensitive hashing (LSH) approximate nearest neighbor search algorithms. To describe a molecule, MHFP6 extracts the SMILES of all circular substructures around each atom up to a diameter of six bonds and applies the MinHash method to the resulting set. MHFP6 outperforms ECFP4 in benchmarking analog recovery studies. Furthermore, MHFP6 outperforms ECFP4 in approximate nearest neighbor searches by two orders of magnitude in terms of speed, while decreasing the error rate.
 
 **Associated Publication**: https://chemrxiv.org/articles/A_Probabilistic_Molecular_Fingerprint_for_Big_Data_Settings/7176350
@@ -66,6 +67,14 @@ print(lsh_forest_helper.query(fp_q, 1, fps))
 #> [0]
 ```
 
+### SECFP
+SECFP (SMILES Extended Connectifity Fingerprint) creation is achieved by calling the static method `MHFPEncoder.secfp_from_smiles()`:
+```Python
+from mhfp.encoder import MHFPEncoder
+fp = MHFPEncoder.secfp_from_smiles('CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C')
+```
+
+
 ## Documentation
 ### MHFPEncoder
 The class for encoding SMILES and RDKit molecule instances as MHFP fingerprints.
@@ -113,6 +122,33 @@ MHFPEncoder.distance(a, b)
 | b | | A `numpy.ndarray` containing fingerprint hashes. |
 
 **Returns** a `float` representing the distance between two MHFP encoded molecules.
+
+```Python
+MHFPEncoder.secfp_from_mol(in_mol, length=2048, radius=3, rings=True, kekulize=True)
+```
+| Parameter | Default | Description |
+|---|---|---|
+| in_mol | | The input RDKit molecule instance. |
+| length | ```2048``` | The length of the folded fingerprint. |
+| radius | ```3``` | Analogous to the radius for the Morgan fingerprint. The default radius 3 encodes SMILES to MHFP6. |
+| rings | ```True``` | Whether rings in the molecule are included in the fingerprint. As a radii of 3 fails to encode rings and there is no way to determine ring-membership in a substructure SMILES, this considerably increases performance. |
+| kekulize | ```True```  | Whether or not to kekulize the molecule before extracting substructure SMILES. |
+
+**Returns** a `numpy.ndarray` containing the fingerprint values.
+
+```Python
+MHFPEncoder.secfp_from_smiles(in_mol, length=2048, radius=3, rings=True, kekulize=True, sanitize=False)
+```
+| Parameter | Default | Description |
+|---|---|---|
+| in_mol | | The input RDKit molecule instance. |
+| length | ```2048``` | The length of the folded fingerprint. |
+| radius | ```3``` | Analogous to the radius for the Morgan fingerprint. The default radius 3 encodes SMILES to MHFP6. |
+| rings | ```True``` | Whether rings in the molecule are included in the fingerprint. As a radii of 3 fails to encode rings and there is no way to determine ring-membership in a substructure SMILES, this considerably increases performance. |
+| kekulize | ```True```  | Whether or not to kekulize the molecule before extracting substructure SMILES. |
+| sanitize | ```False``` | Whether or not to sanitize the SMILES when parsing it using RDKit. |
+
+**Returns** a `numpy.ndarray` containing the fingerprint values.
 
 ### LSHForestHelper
 If you know your way around Python, I suggest you use the ```LSHForest``` class directly. See code for details.

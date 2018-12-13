@@ -247,7 +247,41 @@ class MHFPEncoder:
       numpy.ndarray -- The folded fingerprint.
     """
 
-    folded = np.zeros(length, dtype=int)
+    folded = np.zeros(length, dtype=np.uint8)
     folded[hash_values % length] = 1
 
     return folded
+
+  @staticmethod
+  def secfp_from_mol(in_mol, length=2048, radius=3, rings=True, kekulize=True):
+    """Creates a folded binary vector fingerprint of a input molecule.
+
+    Arguments:
+      in_mol {rdkit.Chem.rdchem.Mol} -- A RDKit molecule instance
+      length {int} -- The length of the folded fingerprint (default: {2048})
+      radius {int} -- The MHFP radius (a radius of 3 corresponds to SECFP6)  (default: {3})
+      rings {boolean} -- Whether or not to include rings in the shingling (default: {True})
+      kekulize {boolean} -- Whether or not to kekulize the extracted SMILES (default: {True})
+    
+    Returns:
+      numpy.ndarray -- The folded fingerprint.
+    """
+    return MHFPEncoder.fold(MHFPEncoder.hash(MHFPEncoder.shingling_from_mol(in_mol, radius=radius, rings=rings, kekulize=kekulize)), length=length)
+
+
+  @staticmethod
+  def secfp_from_smiles(in_smiles, length=2048, radius=3, rings=True, kekulize=True, sanitize=False):
+    """Creates a folded binary vector fingerprint of a input SMILES string.
+
+    Arguments:
+      in_smiles {string} -- A valid SMILES string
+      length {int} -- The length of the folded fingerprint (default: {2048})
+      radius {int} -- The MHFP radius (a radius of 3 corresponds to SECFP6)  (default: {3})
+      rings {boolean} -- Whether or not to include rings in the shingling (default: {True})
+      kekulize {boolean} -- Whether or not to kekulize the extracted SMILES (default: {True})
+      sanitize {boolean} -- Whether or not to sanitize the SMILES when parsing it using RDKit  (default: {False})
+    
+    Returns:
+      numpy.ndarray -- The folded fingerprint.
+    """
+    return MHFPEncoder.secfp_from_mol(AllChem.MolFromSmiles(in_smiles, sanitize=sanitize), length=length, radius=radius, rings=rings, kekulize=kekulize)

@@ -109,9 +109,11 @@ class LSHForest():
         mhfp {numpy.ndarray} -- A MHFP array containing 32-bit hashes
     """
 
-    self.keys[key] = [self._swap(mhfp[start:end]) for start, end in self.hashranges]
-
-    for h, hashtable in zip(self.keys[key], self.hashtables):
+    # self.keys[key] = [self._swap(mhfp[start:end]) for start, end in self.hashranges]
+    self.keys[key] = 0
+    
+    k = [self._swap(mhfp[start:end]) for start, end in self.hashranges]
+    for h, hashtable in zip(k, self.hashtables):
       hashtable[h].append(key)
     
     self.clean = False
