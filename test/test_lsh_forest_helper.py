@@ -32,7 +32,9 @@ def test_add():
 def test_query():
     assert lfh.query(drugbank[0], 6, drugbank) == [0, 3, 4, 7, 5, 9]
     assert lfh.query(drugbank[0], 6, drugbank, 100) == [0, 3, 4, 7, 5, 9]
-    print(drugbank[0])
+
+def test_query_exclude():
+    assert lfh.query_exclude(drugbank[0], 6, drugbank, [0, 1, 2, 3, 4, 5]) == [7, 9, 171, 20, 30, 62]
 
 
 

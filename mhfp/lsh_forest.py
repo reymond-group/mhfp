@@ -57,6 +57,23 @@ class LSHForestHelper():
     results = self.lsh_forest.query(query_mhfp, k * kc)
     return LSHForestHelper._get_knn(query_mhfp, results, k, data)
 
+  def query_exclude(self, query_mhfp, k, data, exclude, kc=10):
+    """ Query the LSH Forest. k is multiplied by kc when querying the LSH Forest. The k nearest neighbors
+    ist then selected from the list of k * kc nearest neighbors using linear scan.
+
+    Keyword arguments:
+        query_mhfp {numpy.ndarray} -- The query MHFP fingerprint.
+        k {int} -- The number of nearest neighbors to be returned from the approximate nearest neighbors
+        data {dict} -- The MHFP values indexed with the same key supplied to add()
+        exclude {list} -- An array of ids to be ignored
+        kc {int} -- The factor in kc * k for additional approximate nearest neighbors to be searched for (default: {10})
+    Returns:
+      numpy.ndarray -- An array containing the merged hash values.
+    """
+
+    results = self.lsh_forest.query_exclude(query_mhfp, k * kc, exclude)
+    return LSHForestHelper._get_knn(query_mhfp, results, k, data)
+
   @staticmethod
   def _get_knn(query_mhfp, ann, k, data):
     """ Brute-force search for selecting k nearest neighbors from k * kc  approximate nearest neighbors.
@@ -144,6 +161,29 @@ class LSHForest():
     while r > 0:
       for key in self._internal_query(mhfp, r):
         results.add(key)
+        if len(results) >= k:
+          return list(results)
+      r -= 1
+    return list(results)
+
+  def query_exclude(self, mhfp, k, exclude):
+    """Query the LSH Forest.
+
+    Keyword arguments:
+        mhfp -- The query MHFP fingerprint
+        k -- The number of nearest neighbors to be searched for
+        exclude -- An array of ids to be ignored
+    """
+    if not self.clean:
+      warnings.warn('Index out of date. Call index() before querying after adding new entities.', UserWarning)
+
+    results = set()
+    r = self.max_depth
+
+    while r > 0:
+      for key in self._internal_query(mhfp, r):
+        if key not in exclude:
+          results.add(key)
         if len(results) >= k:
           return list(results)
       r -= 1

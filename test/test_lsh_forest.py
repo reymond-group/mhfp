@@ -32,5 +32,6 @@ def test_add():
 def test_query():
     assert lf.query(drugbank[0], 6) == [0, 3, 4, 197, 9, 149]
 
-
+def test_query_exclude():
+    assert lf.query_exclude(drugbank[0], 4, [0, 9]) == [197, 3, 4, 149]
 
