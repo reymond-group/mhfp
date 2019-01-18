@@ -1,4 +1,6 @@
 import warnings
+import numpy as np
+from functools import partial
 from operator import itemgetter
 from collections import defaultdict
 from mhfp.encoder import MHFPEncoder
@@ -9,7 +11,7 @@ from mhfp.encoder import MHFPEncoder
 class LSHForestHelper():
   """A class simplyfing the use of the LSH Forest implementation. Adding paramter kc to imporve search results.
   """
-  def __init__(self, dims = 2048, n_prefix_trees = 64):
+  def __init__(self, dims = 2048, n_prefix_trees = 64, memmap=False, path=''):
     """The parameter dims has to be set to the same number with which the MHFP fingerprints were encoded.
 
     Keyword arguments:
@@ -20,6 +22,8 @@ class LSHForestHelper():
 
     self.dims = dims
     self.n_prefix_trees = n_prefix_trees
+    self.memmap = memmap
+    self.path = path
 
     self.lsh_forest = LSHForest(self.dims, n_prefix_trees=self.n_prefix_trees)
 
@@ -111,7 +115,7 @@ class LSHForest():
 
     self.max_depth = int(self.dims / self.n_prefix_trees)
     self.hashtables = [defaultdict(list) for _ in range(self.n_prefix_trees)]
-    self.hashranges = [(i * self.max_depth, (i + 1) * self.max_depth) for i in range(self.n_prefix_trees)]
+    self.hashranges = np.array([np.array([i * self.max_depth, (i + 1) * self.max_depth]) for i in range(self.n_prefix_trees)])
     self.keys = dict()
     self.clean = False
 
@@ -122,7 +126,7 @@ class LSHForest():
     entries can be queried.
 
     Keyword arguments:
-        key -- The key for the MHFP entry.
+        key {int} -- The key for the MHFP entry.
         mhfp {numpy.ndarray} -- A MHFP array containing 32-bit hashes
     """
 
@@ -130,6 +134,7 @@ class LSHForest():
     self.keys[key] = 0
     
     k = [self._swap(mhfp[start:end]) for start, end in self.hashranges]
+
     for h, hashtable in zip(k, self.hashtables):
       hashtable[h].append(key)
     
@@ -140,7 +145,7 @@ class LSHForest():
     new ones were added. Has to be run before querying.
     """
     for i, hashtable in enumerate(self.hashtables):
-      self.hashtables_sorted[i] = [k for k in hashtable.keys()]
+      self.hashtables_sorted[i] = np.array([k for k in hashtable.keys()])
       self.hashtables_sorted[i].sort()
     
     self.clean = True
