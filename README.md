@@ -4,7 +4,8 @@ MHFP6 (MinHash fingerprint, up to six bonds) is a molecular fingerprint which en
 
 ![Visual Abstract for MHFP](http://doc.gdb.tools/mhfp_ga.jpg)
 
-**Associated Publication**: https://chemrxiv.org/articles/A_Probabilistic_Molecular_Fingerprint_for_Big_Data_Settings/7176350
+**Associated Publication**: 
+https://jcheminf.biomedcentral.com/articles/10.1186/s13321-018-0321-8
 
 ## Materials
 The performance of MHFP has been avaluated using [Open-source platform to benchmark fingerprints for ligand-based virtual screening](https://github.com/rdkit/benchmarking_platform) and [ChEMBL24](https://www.ebi.ac.uk/chembl/downloads). Python (pyspark) scripts for the ChEMBL24 benchmark can be found in this repository.
