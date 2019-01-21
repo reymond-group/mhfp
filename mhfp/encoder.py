@@ -121,6 +121,27 @@ class MHFPEncoder:
 
     return hash_values.reshape((1, self.n_permutations))[0]
 
+  def from_binary_array(self, array):
+    """Creates the hash set for a binary array and returns it without changing the hash
+    values of this instance. This is useful to minhash a folded fingerprint.
+    
+    Arguments:
+      s {numpy.ndarray} -- A sparse binary array.
+    
+    Returns:
+      numpy.ndarray -- A binary array.
+    """
+
+    hash_values = np.zeros([self.n_permutations, 1], dtype=np.uint32)
+    hash_values.fill(MHFPEncoder.max_hash)
+
+    for i, v in enumerate(array):
+      if v == 1:
+        hashes = np.remainder(np.remainder(self.permutations_a * i + self.permutations_b, MHFPEncoder.prime), self.max_hash)
+        hash_values = np.minimum(hash_values, hashes)
+
+    return hash_values.reshape((1, self.n_permutations))[0]
+
   @staticmethod
   def hash(shingling):
     """ For testing purposes only. """
