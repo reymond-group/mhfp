@@ -140,11 +140,11 @@ MHFPEncoder.secfp_from_mol(in_mol, length=2048, radius=3, rings=True, kekulize=T
 **Returns** a `numpy.ndarray` containing the fingerprint values.
 
 ```Python
-MHFPEncoder.secfp_from_smiles(in_mol, length=2048, radius=3, rings=True, kekulize=True, sanitize=False)
+MHFPEncoder.secfp_from_smiles(in_smiles, length=2048, radius=3, rings=True, kekulize=True, sanitize=False)
 ```
 | Parameter | Default | Description |
 |---|---|---|
-| in_mol | | The input RDKit molecule instance. |
+| in_smiles | | The input SMILES. |
 | length | ```2048``` | The length of the folded fingerprint. |
 | radius | ```3``` | Analogous to the radius for the Morgan fingerprint. The default radius 3 encodes SMILES to MHFP6. |
 | rings | ```True``` | Whether rings in the molecule are included in the fingerprint. As a radii of 3 fails to encode rings and there is no way to determine ring-membership in a substructure SMILES, this considerably increases performance. |
