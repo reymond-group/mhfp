@@ -215,6 +215,7 @@ class LSHForest():
             result.append(key)
           j += 1
     return result
+    
   def _swap(self, hashes):
     """Internal method. Swaps bytes for prefixing.
 
