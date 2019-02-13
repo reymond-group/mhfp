@@ -204,7 +204,7 @@ class LSHForest():
 
     prefixes = [self._swap(mhfp[start:start + r]) for start, _ in self.hashranges]
     len_prefix = len(prefixes[0])
-
+    result = []
     for hashtable_sorted, hashtable, prefix in zip(self.hashtables_sorted, self.hashtables, prefixes):
       i = self._binary_search(len(hashtable_sorted), lambda x: hashtable_sorted[x][:len_prefix] >= prefix)
       
@@ -212,9 +212,9 @@ class LSHForest():
         j = i
         while j < len(hashtable_sorted) and hashtable_sorted[j][:len_prefix] == prefix:
           for key in hashtable[hashtable_sorted[j]]:
-            yield key
+            result.append(key)
           j += 1
-
+    return result
   def _swap(self, hashes):
     """Internal method. Swaps bytes for prefixing.
 
