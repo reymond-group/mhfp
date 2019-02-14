@@ -204,18 +204,17 @@ class LSHForest():
 
     prefixes = [self._swap(mhfp[start:start + r]) for start, _ in self.hashranges]
     len_prefix = len(prefixes[0])
-    result = []
+
     for hashtable_sorted, hashtable, prefix in zip(self.hashtables_sorted, self.hashtables, prefixes):
-      i = self._binary_search(len(hashtable_sorted), lambda x: hashtable_sorted[x][:len_prefix] >= prefix)
+      i = self._binary_search(len(hashtable_sorted), hashtable_sorted, prefix, len_prefix)
       
       if i < len(hashtable_sorted) and hashtable_sorted[i][:len_prefix] == prefix:
         j = i
         while j < len(hashtable_sorted) and hashtable_sorted[j][:len_prefix] == prefix:
           for key in hashtable[hashtable_sorted[j]]:
-            result.append(key)
+            yield key
           j += 1
-    return result
-    
+
   def _swap(self, hashes):
     """Internal method. Swaps bytes for prefixing.
 
@@ -225,22 +224,24 @@ class LSHForest():
     return bytes(hashes.byteswap().data)
 
 
-  def _binary_search(self, n, func):
+  def _binary_search(self, n, hashtable_sorted, prefix, len_prefix):
     """Internal method. Performs a binary search on a hashtable using func as the comparison function.
 
     Keyword arguments:
         n -- Upper bound for index
-        func -- The comparison fuction
+        hashtable_sorted -- A sorted hashtable
+        prefix -- The prefix from the query vector
+        len_prefix -- The length of the input prefix
     """
 
     i = 0
     j = n
-
     while i < j:
       h = int(i + (j - i) / 2)
-      if not func(h):
+      
+      if not hashtable_sorted[h][:len_prefix] >= prefix:
         i = h + 1
       else:
         j = h
-    
+
     return i
