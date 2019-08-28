@@ -109,7 +109,7 @@ class LSHForest():
         dims {int} -- The number of dimensions the MHFP fingerprints to be indexed were encoded in (default: {2048})
         n_prefix_trees {int} -- The number of prefix trees to use for indexing (default: {64})
     """
-
+    self.count = 0
     self.dims = dims
     self.n_prefix_trees = n_prefix_trees
 
@@ -167,6 +167,7 @@ class LSHForest():
       for key in self._internal_query(mhfp, r):
         results.add(key)
         if len(results) >= k:
+          print(self.count)
           return list(results)
       r -= 1
     return list(results)
@@ -238,7 +239,7 @@ class LSHForest():
     j = n
     while i < j:
       h = int(i + (j - i) / 2)
-      
+
       if not hashtable_sorted[h][:len_prefix] >= prefix:
         i = h + 1
       else:
