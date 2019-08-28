@@ -4,13 +4,14 @@ from setuptools import setup
 from setuptools import Command
 from setuptools.command.test import test as TestCommand
 from datetime import datetime
+import mhfp
 
 
 with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 NAME = "mhfp"
-VERSION = "1.9.1"
+VERSION = mhfp.__version__
 AUTHOR = "Daniel Probst"
 DESCRIPTION = "Molecular MHFP fingerprints for cheminformatics applications"
 URL = "https://github.com/reymond-group/mhfp"

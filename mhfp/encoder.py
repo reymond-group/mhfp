@@ -268,8 +268,12 @@ class MHFPEncoder:
                     ).encode("utf-8")
                 )
 
+        if min_radius == 0:
+            for i, atom in enumerate(in_mol.GetAtoms()):
+                shingling.append(atom.GetSmarts().encode("utf-8"))
+
         for index, _ in enumerate(in_mol.GetAtoms()):
-            for i in range(min_radius, radius + 1):
+            for i in range(1, radius + 1):
                 p = AllChem.FindAtomEnvironmentOfRadiusN(in_mol, i, index)
                 amap = {}
                 submol = AllChem.PathToSubmol(in_mol, p, atomMap=amap)
