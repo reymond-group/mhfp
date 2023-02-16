@@ -1,4 +1,5 @@
 import struct
+import warnings
 import numpy as np
 
 from hashlib import sha1
@@ -233,7 +234,7 @@ class MHFPEncoder:
     """
 
         # The Jaccard distance of Minhashed values is estimated by
-        return 1.0 - np.float(np.count_nonzero(a == b)) / np.float(len(a))
+        return 1.0 - float(np.count_nonzero(a == b)) / float(len(a))
 
     @staticmethod
     def shingling_from_mol(in_mol, radius=3, rings=True, kekulize=True, min_radius=1):
@@ -285,12 +286,17 @@ class MHFPEncoder:
                     submol, rootedAtAtom=amap[index], canonical=True
                 )
 
-                if smiles is not "":
+                if smiles != "":
                     shingling.append(smiles.encode("utf-8"))
 
         # Set ensures that the same shingle is not hashed multiple times
         # (which would not change the hash, since there would be no new minima)
-        return list(set(shingling))
+        shingling = list(set(shingling))
+
+        if len(shingling) == 0:
+            warnings.warn("The length of the shingling is 0, which results in an empty set and an all zero folded fingerprint.")
+
+        return shingling
 
     @staticmethod
     def shingling_from_smiles(
@@ -329,8 +335,11 @@ class MHFPEncoder:
     Returns:
       numpy.ndarray -- The folded fingerprint.
     """
-
         folded = np.zeros(length, dtype=np.uint8)
+
+        if len(hash_values) == 0:
+            return folded
+
         folded[hash_values % length] = 1
 
         return folded
